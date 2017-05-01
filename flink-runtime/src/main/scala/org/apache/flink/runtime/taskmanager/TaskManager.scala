@@ -1471,7 +1471,8 @@ class TaskManager(
   }
 
   protected def shutdown(): Unit = {
-    context.system.shutdown()
+    //context.system.shutdown()
+    context.system.terminate()
 
     // Await actor system termination and shut down JVM
     new ProcessShutDownThread(
@@ -1821,13 +1822,15 @@ object TaskManager {
       }
 
       // block until everything is done
-      taskManagerSystem.awaitTermination()
+      //taskManagerSystem.awaitTermination()
+      Await.result(taskManagerSystem.terminate(), 10.seconds)
     }
     catch {
       case t: Throwable =>
         LOG.error("Error while starting up taskManager", t)
         try {
-          taskManagerSystem.shutdown()
+          //taskManagerSystem.shutdown()
+          taskManagerSystem.terminate()
         } catch {
           case tt: Throwable => LOG.warn("Could not cleanly shut down actor system", tt)
         }

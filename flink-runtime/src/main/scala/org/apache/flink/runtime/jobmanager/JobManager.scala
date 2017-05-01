@@ -1890,7 +1890,8 @@ class JobManager(
       FiniteDuration(10, SECONDS)).start()
 
     // Shutdown and discard all queued messages
-    context.system.shutdown()
+    //context.system.shutdown()
+    context.system.terminate()
   }
 
   private def instantiateMetrics(jobManagerMetricGroup: MetricGroup) : Unit = {
@@ -2057,7 +2058,8 @@ object JobManager {
     }
 
     // block until everything is shut down
-    jobManagerSystem.awaitTermination()
+    //jobManagerSystem.awaitTermination()
+    Await.result(jobManagerSystem.terminate(), 10.seconds)
 
     webMonitorOption.foreach{
       webMonitor =>
@@ -2330,7 +2332,8 @@ object JobManager {
       case t: Throwable =>
         LOG.error("Error while starting up JobManager", t)
         try {
-          jobManagerSystem.shutdown()
+          //jobManagerSystem.shutdown()
+          jobManagerSystem.terminate()
         } catch {
           case tt: Throwable => LOG.warn("Could not cleanly shut down actor system", tt)
         }

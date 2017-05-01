@@ -440,31 +440,38 @@ abstract class FlinkMiniCluster(
 
     if (!useSingleActorSystem) {
       taskManagerActorSystems foreach {
-        _ foreach(_.shutdown())
+        //_ foreach(_.shutdown())
+        _ foreach(_.terminate())
       }
 
       resourceManagerActorSystems foreach {
-        _ foreach(_.shutdown())
+        //_ foreach(_.shutdown())
+        _ foreach(_.terminate())
       }
     }
 
     jobManagerActorSystems foreach {
-      _ foreach(_.shutdown())
+      //_ foreach(_.shutdown())
+      _ foreach(_.terminate())
     }
 
   }
 
+  import scala.concurrent.duration._
   def awaitTermination(): Unit = {
     jobManagerActorSystems foreach {
-      _ foreach(_.awaitTermination())
+      //_ foreach(_.awaitTermination())
+      _ foreach { a => Await.result(a.terminate(), 10.seconds) }
     }
 
     resourceManagerActorSystems foreach {
-      _ foreach(_.awaitTermination())
+      //_ foreach(_.awaitTermination())
+      _ foreach { a => Await.result(a.terminate(), 10.seconds) }
     }
 
     taskManagerActorSystems foreach {
-      _ foreach(_.awaitTermination())
+      //_ foreach(_.awaitTermination())
+      _ foreach { a => Await.result(a.terminate(), 10.seconds) }
     }
   }
 
@@ -569,7 +576,8 @@ abstract class FlinkMiniCluster(
 
   def shutdownJobClientActorSystem(actorSystem: ActorSystem): Unit = {
     if(!useSingleActorSystem) {
-      actorSystem.shutdown()
+      //actorSystem.shutdown()
+      actorSystem.terminate()
     }
   }
 
