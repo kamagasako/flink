@@ -61,6 +61,7 @@ import scala.Some;
 import scala.Tuple2;
 import scala.concurrent.Await;
 import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
 import java.io.IOException;
@@ -159,8 +160,14 @@ public abstract class ClusterClient {
 
 		public void shutdown() {
 			if (isLoaded()) {
-				actorSystem.shutdown();
-				actorSystem.awaitTermination();
+				//actorSystem.shutdown();
+				//actorSystem.awaitTermination();
+				actorSystem.terminate();
+				try {
+					Await.result(actorSystem.whenTerminated(), Duration.Inf());
+				} catch (Exception ignore) {
+					;
+				}
 				actorSystem = null;
 			}
 		}
