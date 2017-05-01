@@ -461,17 +461,17 @@ abstract class FlinkMiniCluster(
   def awaitTermination(): Unit = {
     jobManagerActorSystems foreach {
       //_ foreach(_.awaitTermination())
-      _ foreach { a => Await.result(a.terminate(), 10.seconds) }
+      _ foreach { a => Await.result(a.whenTerminated, Duration.Inf) }
     }
 
     resourceManagerActorSystems foreach {
       //_ foreach(_.awaitTermination())
-      _ foreach { a => Await.result(a.terminate(), 10.seconds) }
+      _ foreach { a => Await.result(a.whenTerminated, Duration.Inf) }
     }
 
     taskManagerActorSystems foreach {
       //_ foreach(_.awaitTermination())
-      _ foreach { a => Await.result(a.terminate(), 10.seconds) }
+      _ foreach { a => Await.result(a.whenTerminated, Duration.Inf) }
     }
   }
 

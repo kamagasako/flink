@@ -48,7 +48,9 @@ import org.apache.flink.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Option;
+import scala.concurrent.Await;
 import scala.concurrent.duration.FiniteDuration;
+import scala.concurrent.duration.Duration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
@@ -263,11 +265,17 @@ public class AkkaRpcService implements RpcService {
 			}
 
 			stopped = true;
-			actorSystem.shutdown();
+			//actorSystem.shutdown();
+			actorSystem.terminate();
 			actors.clear();
 		}
 
-		actorSystem.awaitTermination();
+		//actorSystem.awaitTermination();
+		try {
+			Await.result(actorSystem.whenTerminated(), Duration.Inf());
+		} catch (Exception ignore) {
+			;
+		}
 	}
 
 	@Override
@@ -275,7 +283,8 @@ public class AkkaRpcService implements RpcService {
 		return FlinkFuture.supplyAsync(new Callable<Void>(){
 			@Override
 			public Void call() throws Exception {
-				actorSystem.awaitTermination();
+                                //actorSystem.awaitTermination();
+				Await.result(actorSystem.whenTerminated(), Duration.Inf());
 				return null;
 			}
 		}, getExecutor());

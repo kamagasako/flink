@@ -20,6 +20,7 @@ package org.apache.flink.runtime.util;
 
 import akka.actor.ActorSystem;
 import org.slf4j.Logger;
+import scala.concurrent.Await;
 import scala.concurrent.duration.Duration;
 
 import java.util.concurrent.TimeoutException;
@@ -67,7 +68,8 @@ public class ProcessShutDownThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			actorSystem.awaitTermination(terminationTimeout);
+			//actorSystem.awaitTermination(terminationTimeout);
+			Await.result(actorSystem.whenTerminated(), terminationTimeout);
 		} catch (Exception e) {
 			if (e instanceof TimeoutException) {
 				log.error("Actor system shut down timed out.", e);

@@ -23,6 +23,7 @@ import akka.actor.Address;
 import org.apache.flink.api.common.time.Time;
 import org.apache.flink.util.Preconditions;
 import org.slf4j.Logger;
+import scala.concurrent.Await;
 import scala.concurrent.duration.FiniteDuration;
 
 /**
@@ -63,11 +64,15 @@ public class DefaultQuarantineHandler implements QuarantineHandler {
 
 	private void shutdownActorSystem(ActorSystem actorSystem) {
 		// shut the actor system down
-		actorSystem.shutdown();
+		//actorSystem.shutdown();
+		actorSystem.terminate();
 
 		try {
 			// give it some time to complete the shutdown
-			actorSystem.awaitTermination(timeout);
+			//actorSystem.awaitTermination(timeout);
+			Await.result(actorSystem.whenTerminated(), timeout);
+		} catch (Exception ignore) {
+			;
 		} finally {
 			// now let's crash the JVM
 			System.exit(exitCode);

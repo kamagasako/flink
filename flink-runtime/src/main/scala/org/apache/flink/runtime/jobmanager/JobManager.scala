@@ -2059,7 +2059,7 @@ object JobManager {
 
     // block until everything is shut down
     //jobManagerSystem.awaitTermination()
-    Await.result(jobManagerSystem.terminate(), 10.seconds)
+    Await.result(jobManagerSystem.whenTerminated, Duration.Inf)
 
     webMonitorOption.foreach{
       webMonitor =>

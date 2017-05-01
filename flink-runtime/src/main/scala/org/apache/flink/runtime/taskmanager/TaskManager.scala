@@ -1823,7 +1823,7 @@ object TaskManager {
 
       // block until everything is done
       //taskManagerSystem.awaitTermination()
-      Await.result(taskManagerSystem.terminate(), 10.seconds)
+      Await.result(taskManagerSystem.whenTerminated, Duration.Inf)
     }
     catch {
       case t: Throwable =>

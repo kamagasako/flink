@@ -208,7 +208,8 @@ public class QueryableStateClient {
 
 		if (actorSystem != null) {
 			try {
-				actorSystem.shutdown();
+                                //actorSystem.shutdown();
+				actorSystem.terminate();
 			} catch (Throwable t) {
 				LOG.error("Failed to shut down ActorSystem", t);
 			}

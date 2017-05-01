@@ -30,6 +30,10 @@ import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryType;
 import java.lang.management.MemoryUsage;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import scala.concurrent.Await;
+import scala.concurrent.duration.FiniteDuration;
 
 /**
  * A thread the periodically logs statistics about:
@@ -106,7 +110,15 @@ public class MemoryLogger extends Thread {
 	@Override
 	public void run() {
 		try {
-			while (running && (monitored == null || !monitored.isTerminated())) {
+			//while (running && (monitored == null || !monitored.isTerminated())) {
+			boolean terminated = false;
+			try {
+				Await.result(monitored.whenTerminated(), new FiniteDuration(0, TimeUnit.SECONDS));
+				terminated = true;
+			} catch (TimeoutException e) {
+				terminated = false;
+			}
+			while (running && (monitored == null || !terminated)) {
 				logger.info(getMemoryUsageStatsAsString(memoryBean));
 				logger.info(getDirectMemoryStatsAsString(directBufferBean));
 				logger.info(getMemoryPoolStatsAsString(poolBeans));
