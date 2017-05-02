@@ -166,7 +166,6 @@ public abstract class ClusterClient {
 				try {
 					Await.result(actorSystem.whenTerminated(), Duration.Inf());
 				} catch (Exception ignore) {
-					;
 				}
 				actorSystem = null;
 			}

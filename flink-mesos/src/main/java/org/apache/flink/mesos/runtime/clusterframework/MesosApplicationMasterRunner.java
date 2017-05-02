@@ -65,6 +65,7 @@ import org.apache.mesos.Protos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import scala.concurrent.Await;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
@@ -378,7 +379,8 @@ public class MesosApplicationMasterRunner {
 
 			if (actorSystem != null) {
 				try {
-					actorSystem.shutdown();
+					//actorSystem.shutdown();
+					actorSystem.terminate();
 				} catch (Throwable tt) {
 					LOG.error("Error shutting down actor system", tt);
 				}
@@ -415,7 +417,11 @@ public class MesosApplicationMasterRunner {
 		LOG.info("Mesos JobManager started");
 
 		// wait until everything is done
-		actorSystem.awaitTermination();
+		//actorSystem.awaitTermination();
+		try {
+			Await.result(actorSystem.whenTerminated(), Duration.Inf());
+		} catch (Exception e) {
+		}
 
 		// if we get here, everything work out jolly all right, and we even exited smoothly
 		if (webMonitor != null) {

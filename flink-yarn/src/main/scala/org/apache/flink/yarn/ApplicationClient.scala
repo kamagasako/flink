@@ -87,7 +87,8 @@ class ApplicationClient(
     }
 
     // Terminate the whole actor system because there is only the application client running
-    context.system.shutdown()
+    //context.system.shutdown()
+    context.system.terminate()
   }
 
   override def handleMessage: Receive = {

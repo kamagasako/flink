@@ -57,6 +57,8 @@ import org.slf4j.LoggerFactory;
 
 import scala.Option;
 import scala.Some;
+import scala.concurrent.Await;
+import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
 import java.io.File;
@@ -409,7 +411,8 @@ public class YarnApplicationMasterRunner {
 
 			if (actorSystem != null) {
 				try {
-					actorSystem.shutdown();
+					//actorSystem.shutdown();
+					actorSystem.terminate();
 				} catch (Throwable tt) {
 					LOG.error("Error shutting down actor system", tt);
 				}
@@ -425,7 +428,11 @@ public class YarnApplicationMasterRunner {
 		LOG.info("YARN Application Master started");
 
 		// wait until everything is done
-		actorSystem.awaitTermination();
+		//actorSystem.awaitTermination();
+		try {
+		Await.result(actorSystem.whenTerminated(), Duration.Inf());
+		} catch (Exception ignore) {
+		}
 
 		// if we get here, everything work out jolly all right, and we even exited smoothly
 		if (webMonitor != null) {
