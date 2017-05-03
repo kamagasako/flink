@@ -8,11 +8,15 @@
 
 ## Build
 
+no need to run `tools/change-scala-version.sh 2.11`
+
 ```
 $ mvn clean install -Dmaven.test.skip=true
 ```
 
-original content below;
+original contents below;
+
+---
 
 # Apache Flink
 
