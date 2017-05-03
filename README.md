@@ -1,6 +1,6 @@
-# Apache Flink for Scaka-2.11/Akka-2.5
+# Apache Flink for Scala2.11/Akka2.5/Java8
 
-* Replaced flakka 2.3-custom by akka 2.5. (flakka 2.3-customをakka-2.5で置き換えました)
+* Replaced flakka 2.3-custom by akka 2.5 (flakka 2.3-customをakka 2.5で置き換えました)
 
 * Updated Scala to 2.11 (Scalaのバージョンを2.11に上げました。2.10は非対応です)
 
